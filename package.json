@@ -6,21 +6,12 @@
   "scripts": {
     "start": "node index.js",
     "format": "prettier --write *.js",
-    "dev": "nodemon src/index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": " "
+    "dev": "nodemone index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": ""
-  },
-  "homepage": "",
   "devDependencies": {
-    "nodemon": "^2.0.20",
     "prettier": "^3.1.1"
   },
   "dependencies": {
