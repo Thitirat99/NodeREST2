@@ -19,7 +19,7 @@ mongoose.connect(
 );
 
 
-// const sequelize = new Sequelize(dbUrl);
+const sequelize = new Sequelize(dbUrl);
 //set db url
 //create a connection to the database
 // const sequelize = new Sequelize('database' , 'username' , 'password' ,{
@@ -61,7 +61,7 @@ app.post('/books' ,async (req , res) => {
 });
 
 //Red all
-app.get('/books' ,async (req , res)=> {
+app.get('/books/:id' ,async (req , res)=> {
         try {
 const books = await Book.find();        
             res.send(books);
