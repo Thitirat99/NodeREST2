@@ -4,11 +4,13 @@ const app = express();
 
 app.use(express.json());
 
-const sequelize = new  Sequelize('Database','username','password',{
-    host: 'localhost',
-    dialect: 'sqlite',
-    storage: './Database/SQBooks.sqlite'
-});
+
+
+// const sequelize = new  Sequelize('Database','username','password',{
+//     host: 'localhost',
+//     dialect: 'sqlite',
+//     storage: './Database/SQBooks.sqlite'
+// });
 
 const Book = sequelize.define('book',{
     id: {
