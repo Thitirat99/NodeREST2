@@ -3,16 +3,16 @@
 //Run this file with node sequlizeSQLiteCRUDBook.js
 //Test with Postman
 
-const express = require('express');
-const Sequelize = require('sequelize');
-const app = express();
+const express = require('express')
+const Sequelize = require('sequelize')
+const app = express()
 const cors = require('cors')
 
 
 //parse incoming require
 app.use(express.json());
 app.use(cors())
-const dbUrl = 'postgres://webadmin:OFLafg52248@node57138-thitirat-noderest.proen.app.ruk-com.cloud:11822/Books'
+const dbUrl = 'postgres://webadmin:OFLafg52248@node57138-thitirat-noderest.proen.app.ruk-com.cloud/Books'
 
 const sequelize = new Sequelize(dbUrl);
 //set db url
