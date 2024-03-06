@@ -1,109 +1,100 @@
-//Description : Node Express Rest API with Sequelize and SQLite CRUD Book
-//npm Install express sequlize sqlite3
-//Run this file with node sequlizeSQLiteCRUDBook.js
-//Test with Postman
-
-const express = require('express');
+const express = require ('express');
 const Sequelize = require('sequelize');
-const bodyParser = require('body-parser');
-const { mongo, default: mongoose } = require('mongoose');
+const app = express();
+const cors = require('cors');
 
-//Darabase connection
-mongoose.connect(
-    "mongodb://admin:LGVyie65602@node57139-thitirat-noderest.proen.app.ruk-com.cloud:11859",
-{
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-}
-
-);
+app.use(express.json());
+app.use(cors)
 
 
-// const sequelize = new Sequelize(dbUrl);
-//set db url
-//create a connection to the database
-// const sequelize = new Sequelize('database' , 'username' , 'password' ,{
+
+// const sequelize = new  Sequelize('Database','username','password',{
 //     host: 'localhost',
 //     dialect: 'sqlite',
 //     storage: './Database/SQBooks.sqlite'
 // });
 
-//define the Book model
-const Book = mongoose.model('book' ,{
+const Book = sequelize.define('book',{
     id: {
-        type: Number,
-        unique: true,
-        required: true,
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
     },
-    title: String,
-    author: String,
-});
-
-const app = express();
-app.use(bodyParser.json());
-
-//Create
-app.post('/books' ,async (req , res) => {
-    try {
-        const lastBook = await Book.findOne().sort({id: -1 });
-        const nextId = lastBook ? lastBook.id + 1 : 1;
-
-        const book = new Book({
-            id: nextId, //Set the custom "id" field
-            ...req.body,//Include other book data from the request body
-        });
-
-        await book.save();
-        res.send(book);
-    }catch (error){
-        res.status(500).send(error);
+    title: {
+        type: sequelize.STRING,
+        allowNull: false
+    },
+    author: {
+        type: Sequelize.STRING,
+        allowNull: false
     }
 });
 
-//Red all
-app.get('/books' ,async (req , res)=> {
-        try {
-const books = await Book.find();        
-            res.send(books);
-        }catch(error){
-            res.status(500).send(error);
+sequelize.sync();
+
+
+app.get('/books',(req,res) => {
+    Book.findAll().then(books => {
+        res.json(books);
+    }).catch(err => {
+        res.status(500).send(err);
+    });
+});
+
+app.get('/books',(req,res) => {
+    Book.findByPk(req.params.id).then(book => {
+        if (!book) {
+            res.status(404).send('Book not found');
+        } else {
+            res.json(book);
         }
+    }).catch(err => {
+        res.status(500).send(err);
+    });
 });
 
-//Read one
-app.get('/books/:id' ,async (req , res)=> {
-    try {
-const book = await Book.findOne({id:req.params.id});        
+app.post('/books',(req,res) => {
+    Book.create(req.body).then(book =>{
         res.send(book);
-    }catch(error){
-        res.status(500).send(error);
-    }
+    }).catch(err => {
+        res.status(500).send(err);
+    });
 });
 
-
-//Update
-app.put('/books/:id' ,async (req , res)=> {
-    try {
-const book = await Book.findOneAndUpdate({id:req.params.id},req.body,{
-    new: true,
-});        
-        res.send(book);
-    }catch(error){
-        res.status(500).send(error);
-    }
+app.put('/books/:id',(req,res) => {
+    Book.findByPk(req.params.id).then(book =>{
+        if (!book){
+            res.status(404).send('Book not found');
+        }else{
+            book.update(req.body).then(() => {
+                res.send(book);
+            }).catch(err => {
+                res.status(500).send(err);
+            });
+        }
+    }).catch(err => {
+        res.status(500).send(err);
+    });
 });
 
-//Delete 
-app.delete('/books/:id' ,async (req , res)=> {
-    try {
-const book = await Book.findOneAndDelete({id:req.params.id});        
-        res.send(book);
-    }catch(error){
-        res.status(500).send(error);
-    }
+app.delete('/books/:id',(req,res) => {
+    Book.findByPk(req.params.id).then(book =>{
+        if (!book){
+            res.status(404).send('Book not found');
+        } else {
+            book.destroy().then(()=> {
+                res.send({});
+            }).catch(err => {
+                res.status(500).send(err);
+            });
+        }
+    }).catch(err => {
+        res.status(500).send(err);
+
+    });
 });
 
-//start the server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT , () => 
-console.log(`Start Server at http://localhost:${PORT}...`));
+const port = process.env.PORT || 3000;
+app.listen(port,() => console.log(`Listening on port ${port}...`));
+    
+  
